@@ -12,13 +12,21 @@ var client *redis.Client
 var templates *template.Template
 
 func main(){
+    
+    // Redis instance initilization
     client = redis.NewClient(&redis.Options{
         Addr : "localhost:6379",
     })
+
     templates = template.Must(template.ParseGlob("templates/*.html"))
     r := mux.NewRouter()
     r.HandleFunc("/", indexGetHandler).Methods("GET")
     r.HandleFunc("/", indexPostHandler).Methods("POST")
+
+    // Common file server to handle all static files
+    fs := http.FileServer(http.Dir("./static/"))
+    r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+    
     http.Handle("/", r)
 	http.ListenAndServe(":8080", nil)
 }
