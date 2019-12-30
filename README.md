@@ -1,2 +1,2 @@
 # Go
-Learning Go
+Learning Go for fun.
